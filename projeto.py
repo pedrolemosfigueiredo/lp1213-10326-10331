@@ -26,11 +26,15 @@ print sheet.name
 con = lite.connect('test.db')
 
 query = con.cursor()
-
 query.execute("CREATE TABLE IF NOT EXISTS inscricoes(row char(50))")
 
-for x in range(sheet.ncols):
-    query.execute('alter table inscricoes(add' + str(sheet.cell(x, 0))  + ')')
+for x in range( sheet.nrows - 1):
+    for y in range ( sheet.ncols - 1):
+   # query.execute('alter table inscricoes(add' + str(sheet.cell(x, 0))  + ')')
+        print unicode(sheet.cell_value(x, y)), x, y 
+    #    print 'ALTER TABLE inscricoes ADD {0} CHAR(100)'.format(unicode(str(sheet.cell(x, y))))
+   #     query.execute('ALTER TABLE inscricoes ADD {0} CHAR(100)'.format(unicode(sheet.cell(x, y))))
+        pass
     pass
 
 '''for x in range(sheet.ncols):
