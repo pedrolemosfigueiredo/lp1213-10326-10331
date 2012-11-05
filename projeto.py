@@ -23,22 +23,27 @@ query.execute("CREATE table if not exists inscricoes(row char(50))")
 print unicodedata.normalize('NFKD', unicode(sheet.cell_value(0,0))).encode('ascii','ignore')
 
 
-
-
-
-
 # unicodedata.normalize('NFKD', unicode(sheet.cell_value(5,0))).encode('ascii','ignore')
 '''
 def get_not_empty(row_position, sheet)
     if sheet.cell_value
 '''
 
-for x in range(1, sheet.ncols - 1):
-    for y in range (2, sheet.nrows - 1):
+for x in range(2, sheet.nrows - 1):
+    for y in range (0, sheet.ncols - 1):
         word = unicodedata.normalize('NFKD', unicode(sheet.cell_value(x,y))).encode('ascii','ignore')
         if (48 > ord(word[0]) or 57 < ord(word[0])) and x == 2:
             print 'ALTER TABLE inscricoes ADD {0} CHAR(100)'.format(word).replace(':','')
             query.execute('ALTER TABLE inscricoes ADD {0} CHAR(100)'.format(word).replace(':',''))
+            pass
+        elif x != 2:
+            query.execute('insert into inscricoes({0}) values({1})'.format(
+                unicodedata.normalize('NFKD', unicode(sheet.cell_value(x,2))).encode('ascii','ignore'),word))
+            pass
+        elif 48<ord(word[0])<57 and x == 2:
+            print 'ALTER TABLE inscricoes ADD ano {0} CHAR(100)'.format(word).replace(':','').replace('/',' ')
+            query.execute('ALTER TABLE inscricoes ADD ano {0} CHAR(100)'.format(word).replace(':','')).replace('/',' ')
+            pass
         pass
     pass
 
@@ -51,4 +56,3 @@ for x in range(1, sheet.ncols - 1):
         pass
     
     pass'''
-
