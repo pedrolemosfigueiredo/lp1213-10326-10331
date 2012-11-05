@@ -13,7 +13,9 @@ ORDEM = 0
 DADOS1 = 1
 DADOS2 = 2
 
+#guarda um documento xls em book
 book = open_workbook('Inscritos_2010-2011.xls','cp1252')
+#guarda a folha 30 em sheet
 sheet = book.sheet_by_index(30)
 con = lite.connect('test.db')
 
@@ -22,32 +24,32 @@ query.execute("CREATE table if not exists inscricoes(row char(50))")
 
 print unicodedata.normalize('NFKD', unicode(sheet.cell_value(0,0))).encode('ascii','ignore')
 
-
 # unicodedata.normalize('NFKD', unicode(sheet.cell_value(5,0))).encode('ascii','ignore')
 '''
 def get_not_empty(row_position, sheet)
     if sheet.cell_value
 '''
-
+#estes dois ciclos for percorrem as linhas e colunas
 for x in range(2, sheet.nrows - 1):
     for y in range (0, sheet.ncols - 1):
         word = unicodedata.normalize('NFKD', unicode(sheet.cell_value(x,y))).encode('ascii','ignore')
+        #esta condição é para criar as colunas que não começam com um valor numérico
         if (48 > ord(word[0]) or 57 < ord(word[0])) and x == 2:
-            print 'ALTER TABLE inscricoes ADD {0} CHAR(100)'.format(word).replace(':','')
-            query.execute('ALTER TABLE inscricoes ADD {0} CHAR(100)'.format(word).replace(':',''))
+            print 'ALTER TABLE inscricoes ADD {0} CHAR(100)'.format(word.replace(' ','_')).replace(':','')
+            query.execute('ALTER TABLE inscricoes ADD {0} CHAR(100)'.format(word.replace(' ','_')).replace(':',''))
             pass
+        #esta condição é para inserir valores nas colunas
         elif x != 2:
             query.execute('insert into inscricoes({0}) values({1})'.format(
-                unicodedata.normalize('NFKD', unicode(sheet.cell_value(x,2))).encode('ascii','ignore'),word))
+            unicodedata.normalize('NFKD', unicode(sheet.cell_value(x,2))).encode('ascii','ignore'),word.replace(':','')))
             pass
+        #esta condição é para criar as colunas que começam com um valor numérico
         elif 48<ord(word[0])<57 and x == 2:
-            print 'ALTER TABLE inscricoes ADD ano {0} CHAR(100)'.format(word).replace(':','').replace('/',' ')
-            query.execute('ALTER TABLE inscricoes ADD ano {0} CHAR(100)'.format(word).replace(':','')).replace('/',' ')
+            print 'ALTER TABLE inscricoes ADD ano {0} CHAR(100)'.format(word.replace(' ','_')).replace(':','').replace('/','_')
+            query.execute('ALTER TABLE inscricoes ADD ano_{0} CHAR(100)'.format(word.replace(' ','_')).replace(':','').replace('/','_'))
             pass
         pass
     pass
-
-
 '''for x in range(sheet.ncols):
     for y in range(2, sheet.nrows):
         print sheet.cell(x, y)
